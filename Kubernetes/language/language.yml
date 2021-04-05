@@ -1,3 +1,5 @@
+### MODIFIED FOR OPENSHIFT LOCAL IMAGES
+
 # A service which exposes the .net frontend app container through a dependable hostname: http://language-frontend:5000
 apiVersion: v1
 kind: Service
@@ -16,7 +18,7 @@ spec:
     protocol: TCP
 ---
 # A deployment declaratively indicating how many instances of the .net frontend app container we want up
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: language-frontend
@@ -29,7 +31,7 @@ spec:
     spec:
       containers:
       - name: language-frontend
-        image: # < URI of the Frontend App image >
+        image: cognitive-services-containers-samples:latest
         ports:
         - name: public-port
           containerPort: 80
@@ -40,8 +42,6 @@ spec:
           initialDelaySeconds: 30
           timeoutSeconds: 1
           periodSeconds: 10
-      imagePullSecrets:
-        - name: # < Name of the registry secret providing access to the frontend image >
       automountServiceAccountToken: false
 ---
 # A service which exposes the cognitive-service containers through a dependable hostname: http://language:5000
@@ -62,7 +62,7 @@ spec:
     protocol: TCP
 ---
 # A deployment declaratively indicating how many instances of the cognitive-service container we want up
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: language
@@ -75,7 +75,7 @@ spec:
     spec:
       containers:
       - name: language
-        image: # < URI of the Language Image >
+        image: cognitive-services-language:latest
         ports:
         - name: public-port
           containerPort: 5000
@@ -89,9 +89,6 @@ spec:
         args:
             - "eula=accept"
             - "apikey=" # < API Key for the Language Service >
-            - "billing=" # < Language billing endpoint URI >
-
-      imagePullSecrets:
-        - name: # < Name of the registry secret providing access to the Language image >
+            - "billing=https://westus.api.cognitive.microsoft.com/text/analytics/v2.1"
 
       automountServiceAccountToken: false
