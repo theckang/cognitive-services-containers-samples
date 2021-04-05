@@ -24,6 +24,9 @@ metadata:
   name: language-frontend
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: language-frontend
   template:
     metadata:
       labels:
@@ -68,6 +71,9 @@ metadata:
   name: language
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: language
   template:
     metadata:
       labels:
